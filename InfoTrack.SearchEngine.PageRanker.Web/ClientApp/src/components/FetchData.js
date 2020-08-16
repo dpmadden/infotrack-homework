@@ -48,6 +48,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FetchData = void 0;
 var React = require("react");
@@ -58,13 +65,12 @@ var FetchData = /** @class */ (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.state = {
             url: '',
-            searchTerm: '',
-            validate: { url: true }
+            searchTerm: 'online title search',
+            results: []
         };
         _this.handleUrlChange = _this.handleUrlChange.bind(_this);
         _this.handleSearchTermChange = _this.handleSearchTermChange.bind(_this);
         _this.handleSubmit = _this.handleSubmit.bind(_this);
-        _this.validateUrl = _this.validateUrl.bind(_this);
         return _this;
     }
     FetchData.prototype.handleUrlChange = function (event) {
@@ -75,13 +81,11 @@ var FetchData = /** @class */ (function (_super) {
     };
     FetchData.prototype.handleSubmit = function (ev) {
         return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         ev.preventDefault();
-                        this.validateUrl();
-                        if (!this.state.validate.url)
-                            return [2 /*return*/];
                         return [4 /*yield*/, fetch('/page-rank/search', {
                                 method: 'post',
                                 body: JSON.stringify({
@@ -91,7 +95,18 @@ var FetchData = /** @class */ (function (_super) {
                                 headers: {
                                     'Content-Type': 'application/json'
                                 }
-                            })];
+                            }).then(function (r) { return __awaiter(_this, void 0, void 0, function () {
+                                var response;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4 /*yield*/, r.json()];
+                                        case 1:
+                                            response = (_a.sent());
+                                            this.setState({ results: __spreadArrays([response], this.state.results).slice(0, 10) });
+                                            return [2 /*return*/];
+                                    }
+                                });
+                            }); })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -99,27 +114,33 @@ var FetchData = /** @class */ (function (_super) {
             });
         });
     };
-    FetchData.prototype.validateUrl = function () {
-        debugger;
-        this.setState({
-            validate: {
-                url: true
-            }
-        });
-    };
     FetchData.prototype.render = function () {
         return (React.createElement("div", null,
-            React.createElement("h1", null, "URL Page Rank"),
-            React.createElement(reactstrap_1.Form, { onSubmit: this.handleSubmit },
-                React.createElement(reactstrap_1.FormGroup, null,
-                    React.createElement(reactstrap_1.Label, null,
-                        "Search term:",
-                        React.createElement(reactstrap_1.Input, { type: "text", value: this.state.searchTerm, onChange: this.handleSearchTermChange }))),
-                React.createElement(reactstrap_1.FormGroup, null,
-                    React.createElement(reactstrap_1.Label, null,
-                        "URL:",
-                        React.createElement(reactstrap_1.Input, { type: "url", value: this.state.url, onChange: this.handleUrlChange }))),
-                React.createElement("input", { type: "submit", value: "Submit", className: "btn btn-primary" }))));
+            React.createElement(reactstrap_1.Row, null,
+                React.createElement(reactstrap_1.Col, null,
+                    React.createElement("h1", null, "URL Page Rank"),
+                    React.createElement(reactstrap_1.Form, { onSubmit: this.handleSubmit },
+                        React.createElement(reactstrap_1.FormGroup, null,
+                            React.createElement(reactstrap_1.Label, { className: "w-50" },
+                                "Search term:",
+                                React.createElement(reactstrap_1.Input, { type: "text", value: this.state.searchTerm, onChange: this.handleSearchTermChange, required: true }))),
+                        React.createElement(reactstrap_1.FormGroup, null,
+                            React.createElement(reactstrap_1.Label, { className: "w-50" },
+                                "URL:",
+                                React.createElement(reactstrap_1.Input, { type: "url", value: this.state.url, onChange: this.handleUrlChange, required: true }))),
+                        React.createElement("input", { type: "submit", value: "Submit", className: "btn btn-primary" })))),
+            React.createElement(reactstrap_1.Row, null,
+                React.createElement(reactstrap_1.Col, { className: "mt-5" },
+                    React.createElement("h2", null, "Last 10 Search Results"))),
+            this.state.results.length <= 0 && React.createElement("p", null, "No results to display."),
+            this.state.results.length > 0 && this.state.results.map(function (r) { return (React.createElement("div", { className: "search-history-item" },
+                r.searchTerm,
+                React.createElement("br", null),
+                r.uri,
+                React.createElement("br", null),
+                React.createElement("div", { className: "d-flex" }, r.results.map(function (result, idx) { return (React.createElement("div", { className: result.urlFound ? 'search-result found' : 'search-result not-found', key: idx },
+                    result.pageRank ? "#" + result.pageRank : '-',
+                    React.createElement("small", null, result.searchEngineName))); })))); })));
     };
     FetchData.displayName = "Counter";
     return FetchData;
