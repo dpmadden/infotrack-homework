@@ -84,13 +84,13 @@ export class FetchData extends React.Component<any, { url: string, searchTerm: s
                     </Col>
                 </Row>
                 { this.state.results.length <= 0 && <p>No results to display.</p> }
-                {this.state.results.length > 0 && this.state.results.map(r => (
-                    <div className="search-history-item">
-                        {r.searchTerm}<br/>
+                {this.state.results.length > 0 && this.state.results.map((r, resultIdx) => (
+                    <div className="search-history-item" key={resultIdx}>
+                        <span className="font-weight-bold">{r.searchTerm}</span><br/>
                         {r.uri}<br />
                         <div className="d-flex">
                             {r.results.map((result, idx) => (
-                                <div className={result.urlFound ? 'search-result found' : 'search-result not-found'} key={idx}>
+                                <div className={result.urlFound ? 'search-result found' : 'search-result not-found'} key={`${result.searchEngineName}-${idx}`}>
                                     {result.pageRank ? `#${result.pageRank}` : '-'}
                                     <small>{result.searchEngineName}</small>
                                 </div>

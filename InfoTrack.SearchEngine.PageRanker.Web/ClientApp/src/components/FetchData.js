@@ -133,12 +133,12 @@ var FetchData = /** @class */ (function (_super) {
                 React.createElement(reactstrap_1.Col, { className: "mt-5" },
                     React.createElement("h2", null, "Last 10 Search Results"))),
             this.state.results.length <= 0 && React.createElement("p", null, "No results to display."),
-            this.state.results.length > 0 && this.state.results.map(function (r) { return (React.createElement("div", { className: "search-history-item" },
-                r.searchTerm,
+            this.state.results.length > 0 && this.state.results.map(function (r, resultIdx) { return (React.createElement("div", { className: "search-history-item", key: resultIdx },
+                React.createElement("span", { className: "font-weight-bold" }, r.searchTerm),
                 React.createElement("br", null),
                 r.uri,
                 React.createElement("br", null),
-                React.createElement("div", { className: "d-flex" }, r.results.map(function (result, idx) { return (React.createElement("div", { className: result.urlFound ? 'search-result found' : 'search-result not-found', key: idx },
+                React.createElement("div", { className: "d-flex" }, r.results.map(function (result, idx) { return (React.createElement("div", { className: result.urlFound ? 'search-result found' : 'search-result not-found', key: result.searchEngineName + "-" + idx },
                     result.pageRank ? "#" + result.pageRank : '-',
                     React.createElement("small", null, result.searchEngineName))); })))); })));
     };
