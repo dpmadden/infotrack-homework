@@ -9,7 +9,18 @@ export class FetchData extends React.Component<any, { currentCount: number }> {
         this.incrementCounter = this.incrementCounter.bind(this);
     }
 
-    incrementCounter() {
+    async incrementCounter() {
+        await fetch('/page-rank/search',
+            {
+                method: 'post',
+                body: JSON.stringify({
+                    keywords: ['asd', 'tyty'],
+                    url: 'http://google.com'
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
         this.setState({
             currentCount: this.state.currentCount + 1
         });

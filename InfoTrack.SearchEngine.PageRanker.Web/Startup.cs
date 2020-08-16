@@ -1,3 +1,6 @@
+using InfoTrack.SearchEngine.PageRanker.Services;
+using InfoTrack.SearchEngine.PageRanker.Services.Google;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -20,7 +23,8 @@ namespace InfoTrack.SearchEngine.PageRanker.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddTransient<IPageRanker>(x => new GooglePageRanker());
+            services.AddTransient<ISearchEngineRanker>(x => new SearchEngineRanker(x.GetServices<IPageRanker>()));
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory

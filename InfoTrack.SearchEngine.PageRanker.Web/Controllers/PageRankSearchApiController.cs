@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
+using InfoTrack.SearchEngine.PageRanker.Services;
 using InfoTrack.SearchEngine.PageRanker.Web.Models;
 
 using Microsoft.AspNetCore.Mvc;
@@ -10,17 +12,27 @@ namespace InfoTrack.SearchEngine.PageRanker.Web.Controllers
     [ApiController, Route("page-rank")]
     public class PageRankSearchApiController : ControllerBase
     {
+        private readonly ISearchEngineRanker _searchEngineRanker;
+
+        public PageRankSearchApiController(ISearchEngineRanker searchEngineRanker)
+        {
+            _searchEngineRanker = searchEngineRanker ?? throw new ArgumentNullException(nameof(searchEngineRanker));
+        }
+
         [Route("search"), HttpPost]
-        public Task<ActionResult> FindUrlPageRank([FromBody] PageRankRequest pageRankRequest)
+        public async Task<ActionResult> FindUrlPageRank([FromBody] PageRankRequest pageRankRequest)
         {
             if (!Uri.TryCreate(pageRankRequest.Url, UriKind.Absolute, out var searchUri))
             {
-                return Task.FromResult<ActionResult>(BadRequest(ModelState));
+                return BadRequest(ModelState);
             }
 
-            return Task.FromResult<ActionResult>(new ObjectResult(new PageRankResponse(pageRankRequest.Keywords,
-                                                                                       searchUri,
-                                                                                       new SearchEnginePageRank[0])));
+            var pageRanks = await _searchEngineRanker.GetPageRanks(pageRankRequest.Keywords, searchUri);
+
+            return new ObjectResult(new PageRankResponse(pageRankRequest.Keywords,
+                                                         searchUri,
+                                                         pageRanks.Select(x => new SearchEnginePageRank(x.SearchEngine, x.PageRank))
+                                                                  .ToArray()));
         }
     }
 }
