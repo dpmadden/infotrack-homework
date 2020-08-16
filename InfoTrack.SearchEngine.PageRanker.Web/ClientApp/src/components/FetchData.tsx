@@ -15,7 +15,7 @@ export class FetchData extends React.Component<any, { currentCount: number }> {
                 method: 'post',
                 body: JSON.stringify({
                     keywords: ['asd', 'tyty'],
-                    url: 'http://google.com'
+                    url: 'https://www.citylegal.com.au/nsw-land-titles/'
                 }),
                 headers: {
                     'Content-Type': 'application/json'
