@@ -1,59 +1,44 @@
-import React, { Component } from 'react';
-
-export class FetchData extends Component {
-  static displayName = FetchData.name;
-
-  constructor(props) {
-    super(props);
-    this.state = { forecasts: [], loading: true };
-  }
-
-  componentDidMount() {
-    this.populateWeatherData();
-  }
-
-  static renderForecastsTable(forecasts) {
-    return (
-      <table className='table table-striped' aria-labelledby="tabelLabel">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
-          </tr>
-        </thead>
-        <tbody>
-          {forecasts.map(forecast =>
-            <tr key={forecast.date}>
-              <td>{forecast.date}</td>
-              <td>{forecast.temperatureC}</td>
-              <td>{forecast.temperatureF}</td>
-              <td>{forecast.summary}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    );
-  }
-
-  render() {
-    let contents = this.state.loading
-      ? <p><em>Loading...</em></p>
-      : FetchData.renderForecastsTable(this.state.forecasts);
-
-    return (
-      <div>
-        <h1 id="tabelLabel" >Weather forecast</h1>
-        <p>This component demonstrates fetching data from the server.</p>
-        {contents}
-      </div>
-    );
-  }
-
-  async populateWeatherData() {
-    const response = await fetch('weatherforecast');
-    const data = await response.json();
-    this.setState({ forecasts: data, loading: false });
-  }
-}
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FetchData = void 0;
+var React = require("react");
+var FetchData = /** @class */ (function (_super) {
+    __extends(FetchData, _super);
+    function FetchData(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = { currentCount: 0 };
+        _this.incrementCounter = _this.incrementCounter.bind(_this);
+        return _this;
+    }
+    FetchData.prototype.incrementCounter = function () {
+        this.setState({
+            currentCount: this.state.currentCount + 1
+        });
+    };
+    FetchData.prototype.render = function () {
+        return (React.createElement("div", null,
+            React.createElement("h1", null, "Counter"),
+            React.createElement("p", null, "This is a simple example of a Damien component."),
+            React.createElement("p", { "aria-live": "polite" },
+                "Current count: ",
+                React.createElement("strong", null, this.state.currentCount)),
+            React.createElement("button", { className: "btn btn-primary", onClick: this.incrementCounter }, "Increment")));
+    };
+    FetchData.displayName = "Counter";
+    return FetchData;
+}(React.Component));
+exports.FetchData = FetchData;
+//# sourceMappingURL=FetchData.js.map
