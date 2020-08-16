@@ -22,15 +22,10 @@ namespace InfoTrack.SearchEngine.PageRanker.Web.Controllers
         [Route("search"), HttpPost]
         public async Task<ActionResult> FindUrlPageRank([FromBody] PageRankRequest pageRankRequest)
         {
-            if (!Uri.TryCreate(pageRankRequest.Url, UriKind.Absolute, out var searchUri))
-            {
-                return BadRequest(ModelState);
-            }
+            var pageRanks = await _searchEngineRanker.GetPageRanks(pageRankRequest.SearchTerm, pageRankRequest.Url);
 
-            var pageRanks = await _searchEngineRanker.GetPageRanks(pageRankRequest.Keywords, searchUri);
-
-            return new ObjectResult(new PageRankResponse(pageRankRequest.Keywords,
-                                                         searchUri,
+            return new ObjectResult(new PageRankResponse(pageRankRequest.SearchTerm,
+                                                         pageRankRequest.Url,
                                                          pageRanks.Select(x => new SearchEnginePageRank(x.SearchEngine, x.PageRank))
                                                                   .ToArray()));
         }

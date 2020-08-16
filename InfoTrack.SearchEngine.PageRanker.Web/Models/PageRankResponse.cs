@@ -4,15 +4,15 @@ namespace InfoTrack.SearchEngine.PageRanker.Web.Models
 {
     public class PageRankResponse
     {
-        public PageRankResponse(string[] keywords, Uri url, SearchEnginePageRank[] results)
+        public PageRankResponse(string searchTerm, string url, SearchEnginePageRank[] results)
         {
-            Keywords = keywords;
+            SearchTerm = searchTerm;
             Uri = url;
             Results = results;
         }
 
-        public string[] Keywords { get; }
-        public Uri Uri { get; }
+        public string SearchTerm { get; }
+        public string Uri { get; }
 
         public SearchEnginePageRank[] Results { get; }
     }

@@ -1,38 +1,77 @@
 ﻿import * as React from 'react';
+import { Form, FormGroup, Label, Input } from "reactstrap";
 
-export class FetchData extends React.Component<any, { currentCount: number }> {
+export class FetchData extends React.Component<any, { url: string, searchTerm: string, validate: { url: boolean } }> {
     static displayName = "Counter";
 
     constructor(props) {
         super(props);
-        this.state = { currentCount: 0 };
-        this.incrementCounter = this.incrementCounter.bind(this);
+
+        this.state = {
+            url: '',
+            searchTerm: '',
+            validate: { url: true }
+        };
+
+        this.handleUrlChange = this.handleUrlChange.bind(this);
+        this.handleSearchTermChange = this.handleSearchTermChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.validateUrl = this.validateUrl.bind(this);
     }
 
-    async incrementCounter() {
+    handleUrlChange(event) {
+        this.setState({url: event.target.value});
+    }
+
+    handleSearchTermChange(event) {
+        this.setState({searchTerm: event.target.value});
+    }
+
+    async handleSubmit(ev) {
+        ev.preventDefault();
+        this.validateUrl();
+        if (!this.state.validate.url) return;
         await fetch('/page-rank/search',
             {
                 method: 'post',
                 body: JSON.stringify({
-                    keywords: ['asd', 'tyty'],
-                    url: 'https://www.citylegal.com.au/nsw-land-titles/'
+                    searchTerm: this.state.searchTerm,
+                    url: this.state.url
                 }),
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
+    }
+
+    validateUrl(): void {
+        debugger;
         this.setState({
-            currentCount: this.state.currentCount + 1
+            validate: {
+                url: true
+            }
         });
     }
 
     render() {
         return (
             <div>
-                <h1>Counter</h1>
-                <p>This is a simple example of a Damien component.</p>
-                <p aria-live="polite">Current count: <strong>{this.state.currentCount}</strong></p>
-                <button className="btn btn-primary" onClick={this.incrementCounter}>Increment</button>
+                <h1>URL Page Rank</h1>
+                <Form onSubmit={this.handleSubmit}>
+                    <FormGroup>
+                        <Label>
+                            Search term:
+                            <Input type="text" value={this.state.searchTerm} onChange={this.handleSearchTermChange} />
+                        </Label>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>
+                            URL:
+                            <Input type="url" value={this.state.url} onChange={this.handleUrlChange} />
+                        </Label>
+                    </FormGroup>
+                    <input type="submit" value="Submit" className="btn btn-primary" />
+                </Form>
             </div>
         );
     }

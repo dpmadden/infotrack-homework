@@ -7,19 +7,19 @@ namespace InfoTrack.SearchEngine.PageRanker.Services.Google
 {
     public class GooglePageRanker : IPageRanker
     {
-        private const string SearchUrl = "https://infotrack-tests.infotrack.com.au/Google/Page{0}.html";
+        private const string SearchUrl = "https://infotrack-tests.infotrack.com.au/Google/Page{0}.html?q={1}";
 
         private static readonly HttpClient HttpClient = new HttpClient();
         private static readonly Regex LinkRegex = new Regex("div class=\"g\".+?\\<a href=\"([^\"]+)\".+?>([^<]+)", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         public string Name => "Google";
 
-        public async Task<int?> GetPageRank(string[] keywords, Uri siteUri)
+        public async Task<int?> GetPageRank(string searchTerm, string siteUri)
         {
             var currentUrlIndex = 0;
             for (var i = 1; i <= 5; i++)
             {
-                var response = await HttpClient.GetAsync(string.Format(SearchUrl, i.ToString("00")));
+                var response = await HttpClient.GetAsync(string.Format(SearchUrl, i.ToString("00"), System.Net.WebUtility.UrlEncode(searchTerm)));
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 var matches = LinkRegex.Matches(responseContent);

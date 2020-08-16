@@ -2,7 +2,7 @@
 {
     public class PageRankRequest
     {
-        public string[] Keywords { get; set; } = new string[0];
+        public string SearchTerm { get; set; }
         public string Url { get; set; }
     }
 }
